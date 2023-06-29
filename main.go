@@ -11,6 +11,7 @@ import (
 
 type Article struct {
 	Title string
+	Description string
 }
 
 func filterArticles(articles []Article, keyword string) []Article {
@@ -29,9 +30,12 @@ func main() {
 	c := colly.NewCollector()
 	articles := []Article{}
 
-	c.OnHTML(".link-gray", func(e *colly.HTMLElement) {
-		title := e.Text
-		article := Article{Title: title}
+	c.OnHTML(".sm-pt2", func(e *colly.HTMLElement) {
+		title := e.DOM.Parent().Find(".link-gray").Text()
+
+		description := e.DOM.Parent().Find(".text-gray-lighter").Text()
+
+		article := Article{Title: title, Description: description}
 		articles = append(articles, article)
 	})
 
