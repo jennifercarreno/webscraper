@@ -5,10 +5,24 @@ import (
 	"github.com/gocolly/colly"
 	"encoding/json"
 	"os"
+	"strings"
+
 )
 
 type Article struct {
 	Title string
+}
+
+func filterArticles(articles []Article, keyword string) []Article {
+	filteredArticles := []Article{}
+
+	for _, article := range articles {
+		if strings.Contains(strings.ToLower(article.Title), keyword) {
+			filteredArticles = append(filteredArticles, article)
+		}
+	}
+
+	return filteredArticles
 }
 
 func main() {
@@ -30,7 +44,9 @@ func main() {
 		fmt.Println(article.Title)
 	}
 
-	jsonData, err := json.MarshalIndent(articles, "", "  ")
+	barbieArticles := filterArticles(articles, "barbie")
+
+	jsonData, err := json.MarshalIndent(barbieArticles, "", "  ")
 	if err != nil {
 		fmt.Printf("Error serializing to JSON: %v\n", err)
 		return
@@ -38,7 +54,7 @@ func main() {
 
 	fmt.Println(string(jsonData))
 
-	file, err := os.Create("output.json")
+	file, err := os.Create("outputBarbie.json")
 	if err != nil {
 		fmt.Printf("Error serializing to JSON: %v\n", err)
 		return
